@@ -1,13 +1,13 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"os"
 
 	v1schema "github.com/YanyChoi/manifesto/pkg/schema/v1"
 	v1template "github.com/YanyChoi/manifesto/pkg/template/v1"
+	flag "github.com/YanyChoi/manifesto/pkg/flag"
 )
 
 func main() {
@@ -18,20 +18,16 @@ func main() {
  |__|__|__|___._|__|__|__|__| |_____|_____|____|_____|
  `)
 
-	var template string
-	flag.StringVar(&template, "template", "template.yaml", "path to the template file")
-	var output string
-	flag.StringVar(&output, "output", "deployment.yaml", "path to the output file")
-	flag.Parse()
+	flags := flag.NewFlags()
 
-	schema := v1schema.NewV1Schema(template)
+	schema := v1schema.NewV1Schema(flags.Template)
 	t := v1template.NewTemplate(schema)
 	manifest, err := t.Hydrate()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = os.WriteFile(output, manifest, 0644)
+	err = os.WriteFile(flags.Output, manifest, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
