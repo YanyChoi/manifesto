@@ -1,0 +1,4 @@
+name: manifest
+replicas: 2
+image: nginx:latest
+containerName: nginx

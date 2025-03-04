@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  name: manifest
+spec:
+  replicas: 2
+  selector: null
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+    spec:
+      containers:
+      - image: nginx:latest
+        name: nginx
+        resources: {}
+      topologySpreadConstraints:
+      - maxSkew: 1
+        minDomains: 1
+        topologyKey: node.kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+      - maxSkew: 1
+        minDomains: 3
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: DoNotSchedule
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  name: manifest
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: manifest
+status:
+  loadBalancer: {}
